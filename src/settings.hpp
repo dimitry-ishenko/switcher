@@ -33,6 +33,9 @@ struct Setting
     std::map<QString, Uri> uris;
 
     static constexpr auto types = { "http", "https", "ftp", "socks" };
+
+    bool operator==(const Setting&) const;
+    bool operator!=(const Setting& rhs) const { return !((*this) == rhs); }
 };
 
 ////////////////////////////////////////////////////////////////////////////////

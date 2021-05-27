@@ -62,6 +62,22 @@ Settings Settings::from_file(const QString& path)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
+bool Setting::operator==(const Setting& rhs) const
+{
+    if(mode != rhs.mode) return false;
+    if(autoconfig_url != rhs.autoconfig_url) return false;
+    if(ignore_hosts.size() && rhs.ignore_hosts.size() && ignore_hosts != rhs.ignore_hosts) return false;
+
+    for(auto const& [ type, uri ] : rhs.uris)
+    {
+        auto it = uris.find(type);
+        if(it == uris.end() || it->second != uri) return false;
+    }
+
+    return true;
+}
+
+////////////////////////////////////////////////////////////////////////////////
 QString Settings::match(const Setting&)
 {
     QString name;
