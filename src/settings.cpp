@@ -78,9 +78,10 @@ bool Setting::operator==(const Setting& rhs) const
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-QString Settings::match(const Setting&)
+QString Settings::match(const Setting& setting)
 {
-    QString name;
+    for(auto const& [ name, mine ] : *this)
+        if(setting == mine) return name;
 
-    return name;
+    return QString{ };
 }
