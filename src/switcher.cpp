@@ -47,7 +47,7 @@ Setting Switcher::get_current()
             gs.get("host").toString(),
             gs.get("port").toInt()
         };
-        setting.uris[type] = std::move(uri);
+        if(uri.is_valid()) setting.uris[type] = std::move(uri);
     }
 
     return setting;
