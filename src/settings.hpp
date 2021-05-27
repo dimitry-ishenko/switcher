@@ -26,6 +26,8 @@ struct Setting
     QString autoconfig_url;
     QString ignore_hosts;
     std::map<QString, Uri> uris;
+
+    static constexpr auto types = { "http", "https", "ftp", "socks" };
 };
 
 ////////////////////////////////////////////////////////////////////////////////

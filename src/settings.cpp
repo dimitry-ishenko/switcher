@@ -11,7 +11,17 @@
 #include <QJsonDocument>
 #include <QJsonObject>
 
+#include <algorithm>
+#include <iterator>
 #include <stdexcept>
+
+////////////////////////////////////////////////////////////////////////////////
+template<typename T, typename U>
+bool contains(const T& cont, const U& value)
+{
+    using std::begin; using std::end;
+    return std::find(begin(cont), end(cont), value) != end(cont);
+}
 
 ////////////////////////////////////////////////////////////////////////////////
 Settings Settings::from_file(const QString& path)
@@ -36,7 +46,7 @@ Settings Settings::from_file(const QString& path)
                  if(param == "mode"          ) setting.mode = entry[param].toString();
             else if(param == "autoconfig_url") setting.autoconfig_url = entry[param].toString();
             else if(param == "ignore_hosts"  ) setting.ignore_hosts = entry[param].toString();
-            else if(param == "http" || param == "https" || param == "ftp" || param == "socks")
+            else if(contains(Setting::types, param))
             {
                 auto values = entry[param].toObject();
                 setting.uris[param].host = values["host"].toString();
