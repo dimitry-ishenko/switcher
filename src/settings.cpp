@@ -49,8 +49,11 @@ Settings Settings::from_file(const QString& path)
             else if(contains(Setting::types, param))
             {
                 auto values = entry[param].toObject();
-                setting.uris[param].host = values["host"].toString();
-                setting.uris[param].port = values["port"].toInt(0);
+                Uri uri {
+                    values["host"].toString(),
+                    values["port"].toInt(0)
+                };
+                if(uri.is_valid()) setting.uris[param] = std::move(uri);
             }
         }
     }
