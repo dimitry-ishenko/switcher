@@ -36,8 +36,6 @@ int run_daemon(int argc, char* argv[])
     auto config_path = QStandardPaths::standardLocations(QStandardPaths::ConfigLocation)[0];
     auto settings = Settings::from_file(config_path + "/" + NAME + ".conf");
 
-    Switcher switcher;
-
     QLocalServer server;
     if(!server.listen(NAME))
     {
@@ -53,7 +51,7 @@ int run_daemon(int argc, char* argv[])
             auto name = sock->readAll();
 
             auto it = settings.find(name);
-            if(it != settings.end()) switcher.switch_to(it->second);
+            if(it != settings.end()) Switcher::switch_to(it->second);
 
             delete sock;
         }
