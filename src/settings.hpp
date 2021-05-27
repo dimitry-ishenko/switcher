@@ -17,6 +17,8 @@ struct Uri
 {
     QString host;
     int port = 0;
+
+    bool is_valid() const { return host.size() && port > 0; }
 };
 
 ////////////////////////////////////////////////////////////////////////////////
