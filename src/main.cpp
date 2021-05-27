@@ -5,12 +5,14 @@
 // Distributed under the GNU GPL license. See the LICENSE.md file for details.
 
 ////////////////////////////////////////////////////////////////////////////////
+#include "settings.hpp"
 #include "switcher.hpp"
 
-#include <QCoreApplication>
+#include <QApplication>
 #include <QLocalServer>
 #include <QLocalSocket>
 #include <QObject>
+#include <QStandardPaths>
 
 #include <csignal>
 #include <cstdlib>
@@ -20,7 +22,7 @@
 ////////////////////////////////////////////////////////////////////////////////
 int run_daemon(int argc, char* argv[])
 {
-    QCoreApplication app{ argc, argv };
+    QApplication app{ argc, argv };
 
     std::signal(SIGINT, [](int) {
         std::cout << "Received SIGINT - stopping" << std::endl;
@@ -31,7 +33,10 @@ int run_daemon(int argc, char* argv[])
         QCoreApplication::quit();
     });
 
-    Switcher switcher{ NAME };
+    auto config_path = QStandardPaths::standardLocations(QStandardPaths::ConfigLocation)[0];
+    auto settings = Settings::from_file(config_path + "/" + NAME + ".conf");
+
+    Switcher switcher;
 
     QLocalServer server;
     if(!server.listen(NAME))
@@ -45,7 +50,11 @@ int run_daemon(int argc, char* argv[])
         if(auto sock = server.nextPendingConnection(); sock)
         {
             sock->waitForReadyRead();
-            switcher.switch_to(sock->readAll());
+            auto name = sock->readAll();
+
+            auto it = settings.find(name);
+            if(it != settings.end()) switcher.switch_to(it->second);
+
             delete sock;
         }
     });
@@ -79,14 +88,13 @@ int switch_to(const QByteArray& conf)
 int main(int argc, char* argv[])
 try
 {
-    switch(argc)
+         if(argc == 2) return switch_to(argv[1]);
+    else if(argc == 1) return run_daemon(argc, argv);
+    else
     {
-    case 2: return switch_to(argv[1]); break;
-    case 1: return run_daemon(argc, argv); break;
+        std::cout << "Usage: " << NAME << " [conf]\n" << std::endl;
+        throw std::invalid_argument{ "Invalid number of parameters" };
     }
-
-    std::cout << "Usage: " << NAME << " [conf]\n" << std::endl;
-    throw std::invalid_argument{ "Invalid number of parameters" };
 }
 catch(std::exception& e)
 {

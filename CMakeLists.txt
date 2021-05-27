@@ -24,6 +24,8 @@ include(GNUInstallDirs)
 # executable
 add_executable(${PROJECT_NAME}
     src/main.cpp
+    src/settings.cpp
+    src/settings.hpp
     src/switcher.cpp
     src/switcher.hpp
 )
