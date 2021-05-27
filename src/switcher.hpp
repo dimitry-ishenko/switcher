@@ -15,6 +15,7 @@
 struct Switcher
 {
     static void switch_to(const Setting&);
+    static Setting get_current();
 };
 
 ////////////////////////////////////////////////////////////////////////////////
