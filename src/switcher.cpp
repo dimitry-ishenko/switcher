@@ -20,6 +20,13 @@ void Switcher::switch_to(const Setting& setting)
         gs.set("ignore-hosts", setting.ignore_hosts);
     }
 
+    for(auto const& type : Setting::types)
+    {
+        QGSettings gs{ QByteArray{ } + "org.gnome.system.proxy." + type };
+        gs.set("host", "");
+        gs.set("port", 0);
+    }
+
     for(auto const& [type, uri] : setting.uris)
     {
         QGSettings gs{ ("org.gnome.system.proxy." + type).toLatin1() };
