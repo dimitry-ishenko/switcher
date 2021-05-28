@@ -19,9 +19,7 @@ struct Uri
     int port = 0;
 
     bool is_valid() const { return host.size() && port > 0; }
-
     bool operator==(const Uri& rhs) const { return host == rhs.host && port == rhs.port; }
-    bool operator!=(const Uri& rhs) const { return !(*this == rhs); }
 };
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -35,7 +33,6 @@ struct Setting
     static constexpr auto types = { "http", "https", "ftp", "socks" };
 
     bool operator==(const Setting&) const;
-    bool operator!=(const Setting& rhs) const { return !((*this) == rhs); }
 };
 
 ////////////////////////////////////////////////////////////////////////////////

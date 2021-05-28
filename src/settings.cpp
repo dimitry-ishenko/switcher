@@ -76,7 +76,7 @@ bool Setting::operator==(const Setting& rhs) const
         for(auto const& [ type, uri ] : rhs.uris)
         {
             auto it = uris.find(type);
-            if(it == uris.end() || it->second != uri) return false;
+            if(it == uris.end() || !(it->second == uri)) return false;
         }
         return true;
     }
