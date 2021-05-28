@@ -10,8 +10,6 @@
 
 #include <QApplication>
 #include <QIcon>
-#include <QLocalServer>
-#include <QLocalSocket>
 #include <QMenu>
 #include <QObject>
 #include <QStandardPaths>
@@ -39,27 +37,6 @@ int run_daemon(int argc, char* argv[])
 
     auto config_path = QStandardPaths::standardLocations(QStandardPaths::ConfigLocation)[0];
     auto settings = Settings::from_file(config_path + "/" + NAME + ".conf");
-
-    QLocalServer server;
-    if(!server.listen(NAME))
-    {
-        auto err = "Can't create socket - " + server.errorString();
-        throw std::runtime_error{ err.toStdString() };
-    }
-
-    QObject::connect(&server, &QLocalServer::newConnection, [&]()
-    {
-        if(auto sock = server.nextPendingConnection(); sock)
-        {
-            sock->waitForReadyRead();
-            auto name = sock->readAll();
-
-            auto it = settings.find(name);
-            if(it != settings.end()) Switcher::switch_to(it->second);
-
-            delete sock;
-        }
-    });
 
     QIcon none{ ":/none.png" };
     QMenu menu;
@@ -94,22 +71,13 @@ int run_daemon(int argc, char* argv[])
 ////////////////////////////////////////////////////////////////////////////////
 int switch_to(const QByteArray& conf)
 {
-    QLocalSocket sock;
+    auto config_path = QStandardPaths::standardLocations(QStandardPaths::ConfigLocation)[0];
+    auto settings = Settings::from_file(config_path + "/" + NAME + ".conf");
 
-    sock.connectToServer(NAME);
-    if(!sock.waitForConnected())
-    {
-        auto err = "Can't connect to server - " + sock.errorString();
-        throw std::runtime_error{ err.toStdString() };
-    }
+    auto it = settings.find(conf);
+    if(it == settings.end()) return 1;
 
-    sock.write(conf);
-    if(!sock.waitForBytesWritten())
-    {
-        auto err = "Can't communicate to server - " + sock.errorString();
-        throw std::runtime_error{ err.toStdString() };
-    }
-
+    Switcher::switch_to(it->second);
     return 0;
 }
 

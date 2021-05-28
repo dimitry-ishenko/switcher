@@ -9,7 +9,7 @@ set(CMAKE_INCLUDE_CURRENT_DIR ON)
 add_definitions(-DNAME="${PROJECT_NAME}")
 add_definitions(-DVERSION="${PROJECT_VERSION}")
 
-find_package(Qt5 COMPONENTS Core Network Widgets REQUIRED)
+find_package(Qt5 COMPONENTS Core Widgets REQUIRED)
 set(CMAKE_AUTOMOC ON)
 set(CMAKE_AUTORCC ON)
 set(CMAKE_AUTOUIC ON)
@@ -30,7 +30,7 @@ add_executable(${PROJECT_NAME}
     src/switcher.cpp
     src/switcher.hpp
 )
-target_link_libraries(${PROJECT_NAME} Qt5::Core Qt5::Network Qt5::Widgets ${GSETTINGS_LIBRARIES})
+target_link_libraries(${PROJECT_NAME} Qt5::Core Qt5::Widgets ${GSETTINGS_LIBRARIES})
 
 install(TARGETS ${PROJECT_NAME} DESTINATION ${CMAKE_INSTALL_BINDIR})
 install(FILES LICENSE.md README.md DESTINATION ${CMAKE_INSTALL_DOCDIR})
