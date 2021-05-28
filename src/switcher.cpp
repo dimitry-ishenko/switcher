@@ -20,6 +20,7 @@ void Switcher::switch_to(const Setting& setting)
         gs.set("ignore-hosts", setting.ignore_hosts);
     }
 
+    // clear all uris first
     for(auto const& type : Setting::types)
     {
         QGSettings gs{ QByteArray{ } + "org.gnome.system.proxy." + type };
