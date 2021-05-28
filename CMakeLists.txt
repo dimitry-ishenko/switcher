@@ -33,6 +33,8 @@ add_executable(${PROJECT_NAME}
 target_link_libraries(${PROJECT_NAME} Qt5::Core Qt5::Network Qt5::Widgets ${GSETTINGS_LIBRARIES})
 
 install(TARGETS ${PROJECT_NAME} DESTINATION ${CMAKE_INSTALL_BINDIR})
+install(FILES LICENSE.md README.md DESTINATION ${CMAKE_INSTALL_DOCDIR})
+install(FILES systemd/switcher.service DESTINATION ${CMAKE_INSTALL_LIBDIR}/systemd/user/)
 
 ########################
 # package

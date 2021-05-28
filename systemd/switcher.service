@@ -1,0 +1,8 @@
+[Unit]
+Description=Proxy Switcher
+
+[Service]
+ExecStart=/usr/bin/switcher
+
+[Install]
+WantedBy=default.target
