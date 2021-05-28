@@ -43,9 +43,9 @@ Settings Settings::from_file(const QString& path)
         auto entry = entries[name].toObject();
         for(auto const& param : entry.keys())
         {
-                 if(param == "mode"          ) setting.mode = entry[param].toString();
+                 if(param == "mode") setting.mode = entry[param].toString();
             else if(param == "autoconfig_url") setting.autoconfig_url = entry[param].toString();
-            else if(param == "ignore_hosts"  ) setting.ignore_hosts = entry[param].toString();
+            else if(param == "ignore_hosts") setting.ignore_hosts = entry[param].toString();
             else if(contains(Setting::types, param))
             {
                 auto values = entry[param].toObject();
@@ -65,16 +65,22 @@ Settings Settings::from_file(const QString& path)
 bool Setting::operator==(const Setting& rhs) const
 {
     if(mode != rhs.mode) return false;
-    if(autoconfig_url != rhs.autoconfig_url) return false;
-    if(ignore_hosts.size() && rhs.ignore_hosts.size() && ignore_hosts != rhs.ignore_hosts) return false;
 
-    for(auto const& [ type, uri ] : rhs.uris)
+         if(mode == "none") return true;
+    else if(mode == "auto") return autoconfig_url == rhs.autoconfig_url;
+    else if(mode == "manual")
     {
-        auto it = uris.find(type);
-        if(it == uris.end() || it->second != uri) return false;
-    }
+        if(ignore_hosts != rhs.ignore_hosts) return false;
+        if(uris.size() != rhs.uris.size()) return false;
 
-    return true;
+        for(auto const& [ type, uri ] : rhs.uris)
+        {
+            auto it = uris.find(type);
+            if(it == uris.end() || it->second != uri) return false;
+        }
+        return true;
+    }
+    else return false;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
