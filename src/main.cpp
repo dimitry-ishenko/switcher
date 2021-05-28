@@ -9,10 +9,14 @@
 #include "switcher.hpp"
 
 #include <QApplication>
+#include <QIcon>
 #include <QLocalServer>
 #include <QLocalSocket>
+#include <QMenu>
 #include <QObject>
 #include <QStandardPaths>
+#include <QSystemTrayIcon>
+#include <QTimer>
 
 #include <csignal>
 #include <cstdlib>
@@ -54,6 +58,33 @@ int run_daemon(int argc, char* argv[])
             if(it != settings.end()) Switcher::switch_to(it->second);
 
             delete sock;
+        }
+    });
+
+    QIcon none{ ":/none.png" };
+    QMenu menu;
+
+    QSystemTrayIcon tray{ none };
+    tray.setContextMenu(&menu);
+    tray.show();
+
+    QTimer timer;
+    timer.start(1000);
+
+    QIcon::setThemeName(NAME);
+    QObject::connect(&timer, &QTimer::timeout, [&]()
+    {
+        static QString prev_name;
+
+        auto setting = Switcher::get_current();
+        auto name = settings.match(setting);
+        if(name != prev_name)
+        {
+            auto icon = QIcon::fromTheme(name);
+            if(icon.isNull()) icon = none;
+
+            tray.setIcon(icon);
+            prev_name = name;
         }
     });
 
