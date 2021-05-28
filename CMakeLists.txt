@@ -23,6 +23,7 @@ include(GNUInstallDirs)
 ########################
 # executable
 add_executable(${PROJECT_NAME}
+    icon.qrc
     src/main.cpp
     src/settings.cpp
     src/settings.hpp
