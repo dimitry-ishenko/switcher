@@ -7,7 +7,7 @@
 Debian/Ubuntu/etc:
 
 ```shell
-$ ver=0.0
+$ ver=0.1
 $ url=https://github.com/dimitry-ishenko/switcher/releases/download/v${ver}
 $ wget ${url}/switcher_${ver}_amd64.deb
 $ sudo apt install ./switcher_${ver}_amd64.deb
@@ -16,7 +16,7 @@ $ sudo apt install ./switcher_${ver}_amd64.deb
 RaspberryPi:
 
 ```shell
-$ ver=0.0
+$ ver=0.1
 $ url=https://github.com/dimitry-ishenko/switcher/releases/download/v${ver}
 $ wget ${url}/switcher_${ver}_armhf.deb
 $ sudo apt install ./switcher_${ver}_armhf.deb
@@ -28,7 +28,7 @@ Stable version (requires [Qt](https://www.qt.io/) >= 5.9 and
 [CMake](https://cmake.org/) >= 3.1):
 
 ```shell
-$ ver=0.0
+$ ver=0.1
 $ wget https://github.com/dimitry-ishenko/switcher/archive/v${ver}.tar.gz
 $ tar xzf v${ver}.tar.gz
 $ mkdir switcher-${ver}/build
