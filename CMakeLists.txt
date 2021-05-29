@@ -49,8 +49,7 @@ install(FILES systemd/switcherd.service DESTINATION ${CMAKE_INSTALL_LIBDIR}/syst
 set(CPACK_STRIP_FILES ON)
 set(CPACK_GENERATOR DEB)
 
-set(CPACK_PACKAGE_DESCRIPTION_SUMMARY "...")
-set(CPACK_PACKAGE_DESCRIPTION "...")
+set(CPACK_PACKAGE_DESCRIPTION_SUMMARY "Proxy switcher")
 set(CPACK_DEBIAN_PACKAGE_MAINTAINER "Dimitry Ishenko <dimitry (dot) ishenko (at) (gee) mail (dot) com>")
 
 set(CPACK_DEBIAN_FILE_NAME DEB-DEFAULT)
