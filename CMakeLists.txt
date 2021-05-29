@@ -40,7 +40,7 @@ target_link_libraries(${DAEMON_NAME} Qt5::Core Qt5::Widgets ${GSETTINGS_LIBRARIE
 
 install(TARGETS ${PROJECT_NAME} ${DAEMON_NAME} DESTINATION ${CMAKE_INSTALL_BINDIR})
 install(FILES LICENSE.md README.md DESTINATION ${CMAKE_INSTALL_DOCDIR})
-install(FILES systemd/switcher.service DESTINATION ${CMAKE_INSTALL_LIBDIR}/systemd/user/)
+install(FILES systemd/switcherd.service DESTINATION ${CMAKE_INSTALL_LIBDIR}/systemd/user/)
 
 ########################
 # package

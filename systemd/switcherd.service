@@ -2,7 +2,7 @@
 Description=Proxy Switcher
 
 [Service]
-ExecStart=/usr/bin/switcher
+ExecStart=/usr/bin/switcherd
 
 [Install]
 WantedBy=default.target
