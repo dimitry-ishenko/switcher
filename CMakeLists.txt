@@ -23,14 +23,11 @@ include(GNUInstallDirs)
 ########################
 # executable
 add_executable(${PROJECT_NAME}
-    res/icon.qrc
     src/main.cpp
     src/settings.cpp
     src/settings.hpp
-    src/switcher.cpp
-    src/switcher.hpp
 )
-target_link_libraries(${PROJECT_NAME} Qt5::Core Qt5::Widgets ${GSETTINGS_LIBRARIES})
+target_link_libraries(${PROJECT_NAME} Qt5::Core ${GSETTINGS_LIBRARIES})
 
 set(DAEMON_NAME ${PROJECT_NAME}d)
 add_executable(${DAEMON_NAME}
