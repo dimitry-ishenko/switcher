@@ -8,6 +8,7 @@
 #include "settings.hpp"
 
 #include <QApplication>
+#include <QByteArray>
 #include <QGSettings>
 #include <QIcon>
 #include <QMenu>
@@ -15,6 +16,7 @@
 #include <QStandardPaths>
 #include <QSystemTrayIcon>
 #include <QTimer>
+#include <QVariant>
 
 #include <csignal>
 #include <cstdlib>
