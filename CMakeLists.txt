@@ -22,14 +22,16 @@ include(GNUInstallDirs)
 
 ########################
 # executable
-add_executable(${PROJECT_NAME}
-    src/main.cpp
+set(CLIENT_NAME ${PROJECT_NAME})
+set(DAEMON_NAME ${PROJECT_NAME}d)
+
+add_executable(${CLIENT_NAME}
     src/settings.cpp
     src/settings.hpp
+    src/switcher.cpp
 )
-target_link_libraries(${PROJECT_NAME} Qt5::Core ${GSETTINGS_LIBRARIES})
+target_link_libraries(${CLIENT_NAME} Qt5::Core ${GSETTINGS_LIBRARIES})
 
-set(DAEMON_NAME ${PROJECT_NAME}d)
 add_executable(${DAEMON_NAME}
     res/icon.qrc
     src/settings.cpp
@@ -38,7 +40,7 @@ add_executable(${DAEMON_NAME}
 )
 target_link_libraries(${DAEMON_NAME} Qt5::Core Qt5::Widgets ${GSETTINGS_LIBRARIES})
 
-install(TARGETS ${PROJECT_NAME} ${DAEMON_NAME} DESTINATION ${CMAKE_INSTALL_BINDIR})
+install(TARGETS ${CLIENT_NAME} ${DAEMON_NAME} DESTINATION ${CMAKE_INSTALL_BINDIR})
 install(FILES LICENSE.md README.md DESTINATION ${CMAKE_INSTALL_DOCDIR})
 install(FILES systemd/switcherd.service DESTINATION ${CMAKE_INSTALL_LIBDIR}/systemd/user/)
 
