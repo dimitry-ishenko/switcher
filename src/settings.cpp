@@ -19,7 +19,9 @@
 template<typename T, typename U>
 bool contains(const T& cont, const U& value)
 {
-    using std::begin; using std::end;
+    using std::begin;
+    using std::end;
+
     return std::find(begin(cont), end(cont), value) != end(cont);
 }
 
@@ -84,10 +86,8 @@ bool Setting::operator==(const Setting& rhs) const
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-QString Settings::match(const Setting& setting)
+QString Settings::match(const Setting& other)
 {
-    for(auto const& [ name, mine ] : *this)
-        if(setting == mine) return name;
-
+    for(auto const& [ name, setting ] : *this) if(setting == other) return name;
     return QString{ };
 }
