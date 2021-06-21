@@ -13,6 +13,8 @@
 #include <map>
 
 ////////////////////////////////////////////////////////////////////////////////
+using Type = QString;
+
 struct Uri
 {
     QString host;
@@ -28,15 +30,18 @@ struct Setting
     QString mode;
     QString autoconfig_url;
     QString ignore_hosts;
-    std::map<QString, Uri> uris;
+    std::map<Type, Uri> uris;
 
+    static constexpr auto modes = { "none", "manual", "auto" };
     static constexpr auto types = { "http", "https", "ftp", "socks" };
 
     bool operator==(const Setting&) const;
 };
 
 ////////////////////////////////////////////////////////////////////////////////
-struct Settings : public std::map<QString, Setting>
+using Name = QString;
+
+struct Settings : public std::map<Name, Setting>
 {
     static Settings from_file(const QString&);
     QString match(const Setting&);
