@@ -7,7 +7,6 @@
 ////////////////////////////////////////////////////////////////////////////////
 #include "settings.hpp"
 
-#include <QByteArray>
 #include <QGSettings>
 #include <QStandardPaths>
 #include <QVariant>
@@ -28,14 +27,14 @@ void switch_to(const Setting& setting)
     // clear all uris first
     for(auto const& type : Setting::types)
     {
-        QGSettings gs{ QByteArray{ } + "org.gnome.system.proxy." + type };
+        QGSettings gs{ "org.gnome.system.proxy." + type.toLatin1() };
         gs.set("host", "");
         gs.set("port", 0);
     }
 
     for(auto const& [type, uri] : setting.uris)
     {
-        QGSettings gs{ ("org.gnome.system.proxy." + type).toLatin1() };
+        QGSettings gs{ "org.gnome.system.proxy." + type.toLatin1() };
         gs.set("host", uri.host);
         gs.set("port", uri.port);
     }

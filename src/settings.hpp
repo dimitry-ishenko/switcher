@@ -10,9 +10,12 @@
 
 ////////////////////////////////////////////////////////////////////////////////
 #include <QString>
+
 #include <map>
+#include <set>
 
 ////////////////////////////////////////////////////////////////////////////////
+using Mode = QString;
 using Type = QString;
 
 struct Uri
@@ -27,15 +30,14 @@ struct Uri
 ////////////////////////////////////////////////////////////////////////////////
 struct Setting
 {
-    QString mode;
-    QString autoconfig_url;
-    QString ignore_hosts;
+    Mode mode;
+    QString autoconfig_url, ignore_hosts;
     std::map<Type, Uri> uris;
 
-    static constexpr auto modes = { "none", "manual", "auto" };
-    static constexpr auto types = { "http", "https", "ftp", "socks" };
-
     bool operator==(const Setting&) const;
+
+    static const std::set<Mode> modes;
+    static const std::set<Type> types;
 };
 
 ////////////////////////////////////////////////////////////////////////////////

@@ -8,7 +8,6 @@
 #include "settings.hpp"
 
 #include <QApplication>
-#include <QByteArray>
 #include <QGSettings>
 #include <QIcon>
 #include <QMenu>
@@ -37,7 +36,7 @@ Setting get_current()
 
     for(auto const& type : Setting::types)
     {
-        QGSettings gs{ QByteArray{ } + "org.gnome.system.proxy." + type };
+        QGSettings gs{ "org.gnome.system.proxy." + type.toLatin1() };
         Uri uri {
             gs.get("host").toString(),
             gs.get("port").toInt()
