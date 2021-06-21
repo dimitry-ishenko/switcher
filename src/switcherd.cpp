@@ -15,13 +15,13 @@
 #include <QObject>
 #include <QStandardPaths>
 #include <QSystemTrayIcon>
-#include <QTimer>
 #include <QVariant>
 
 #include <csignal>
 #include <cstdlib>
 #include <stdexcept>
 #include <iostream>
+#include <vector>
 
 ////////////////////////////////////////////////////////////////////////////////
 Setting current()
@@ -63,6 +63,7 @@ try
         QCoreApplication::quit();
     });
 
+    ////////////////////
     auto path = QStandardPaths::standardLocations(QStandardPaths::ConfigLocation)[0];
     QFile file { path + "/switcher.conf" };
     if(!file.open(QFile::ReadOnly))
@@ -73,31 +74,35 @@ try
 
     auto settings = Settings::from(file);
 
+    ////////////////////
+    QIcon::setThemeName("switcher");
     QIcon none { ":/none.png" };
-    QMenu menu;
 
     QSystemTrayIcon tray { none };
+    QMenu menu;
     tray.setContextMenu(&menu);
     tray.show();
 
-    QTimer timer;
-    timer.start(1000);
+    ////////////////////
+    QGSettings proxy { "org.gnome.system.proxy" };
+    std::vector<QGSettings*> types;
 
-    QIcon::setThemeName("switcher");
-    QObject::connect(&timer, &QTimer::timeout, [&]()
+    auto update = [&]()
     {
-        static QString prev_name;
-
         auto name = settings.match( current() );
-        if(name != prev_name)
-        {
-            auto icon = QIcon::fromTheme(name);
-            if(icon.isNull()) icon = none;
 
-            tray.setIcon(icon);
-            prev_name = name;
-        }
-    });
+        auto icon = QIcon::fromTheme(name);
+        if(icon.isNull()) icon = none;
+
+        tray.setIcon(icon);
+    };
+
+    QObject::connect(&proxy, &QGSettings::changed, update);
+    for(auto const& type : Setting::types)
+    {
+        types.push_back(new QGSettings { "org.gnome.system.proxy." + type.toLatin1(), { }, &proxy });
+        QObject::connect(types.back(), &QGSettings::changed, update);
+    }
 
     return app.exec();
 }
