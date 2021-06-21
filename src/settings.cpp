@@ -11,22 +11,43 @@
 #include <QJsonDocument>
 #include <QJsonObject>
 
-#include <stdexcept>
-
 ////////////////////////////////////////////////////////////////////////////////
 const std::set<Mode> Setting::modes { "none", "manual", "auto" };
 const std::set<Type> Setting::types { "http", "https", "ftp", "socks" };
 
 ////////////////////////////////////////////////////////////////////////////////
-Settings Settings::from_file(const QString& path)
+bool Setting::operator==(const Setting& rhs) const
 {
-    QFile file{ path };
-    if(!file.open(QFile::ReadOnly))
-    {
-        auto err = "Can't open file " + file.fileName() + " - " + file.errorString();
-        throw std::runtime_error{ err.toStdString() };
-    }
+    if(mode != rhs.mode) return false;
 
+         if(mode == "none") return true;
+    else if(mode == "auto") return autoconfig_url == rhs.autoconfig_url;
+    else if(mode == "manual")
+    {
+        if(ignore_hosts != rhs.ignore_hosts) return false;
+        if(uris.size() != rhs.uris.size()) return false;
+
+        for(auto const& [ type, uri ] : rhs.uris)
+        {
+            auto it = uris.find(type);
+            if(it == uris.end() || !(it->second == uri)) return false;
+        }
+        return true;
+    }
+    else return false;
+}
+
+////////////////////////////////////////////////////////////////////////////////
+QString Settings::match(const Setting& rhs)
+{
+    for(auto const& [ name, setting ] : (*this))
+        if(setting == rhs) return name;
+    return QString{ };
+}
+
+////////////////////////////////////////////////////////////////////////////////
+Settings Settings::from(QFile& file)
+{
     Settings settings;
 
     auto entries = QJsonDocument::fromJson(file.readAll()).object();
@@ -53,33 +74,4 @@ Settings Settings::from_file(const QString& path)
     }
 
     return settings;
-}
-
-////////////////////////////////////////////////////////////////////////////////
-bool Setting::operator==(const Setting& rhs) const
-{
-    if(mode != rhs.mode) return false;
-
-         if(mode == "none") return true;
-    else if(mode == "auto") return autoconfig_url == rhs.autoconfig_url;
-    else if(mode == "manual")
-    {
-        if(ignore_hosts != rhs.ignore_hosts) return false;
-        if(uris.size() != rhs.uris.size()) return false;
-
-        for(auto const& [ type, uri ] : rhs.uris)
-        {
-            auto it = uris.find(type);
-            if(it == uris.end() || !(it->second == uri)) return false;
-        }
-        return true;
-    }
-    else return false;
-}
-
-////////////////////////////////////////////////////////////////////////////////
-QString Settings::match(const Setting& other)
-{
-    for(auto const& [ name, setting ] : *this) if(setting == other) return name;
-    return QString{ };
 }

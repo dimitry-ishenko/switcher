@@ -7,6 +7,7 @@
 ////////////////////////////////////////////////////////////////////////////////
 #include "settings.hpp"
 
+#include <QFile>
 #include <QGSettings>
 #include <QStandardPaths>
 #include <QVariant>
@@ -18,7 +19,7 @@
 void switch_to(const Setting& setting)
 {
     {
-        QGSettings gs{ "org.gnome.system.proxy" };
+        QGSettings gs { "org.gnome.system.proxy" };
         gs.set("mode", setting.mode);
         gs.set("autoconfig-url", setting.autoconfig_url);
         gs.set("ignore-hosts", setting.ignore_hosts);
@@ -27,14 +28,14 @@ void switch_to(const Setting& setting)
     // clear all uris first
     for(auto const& type : Setting::types)
     {
-        QGSettings gs{ "org.gnome.system.proxy." + type.toLatin1() };
+        QGSettings gs { "org.gnome.system.proxy." + type.toLatin1() };
         gs.set("host", "");
         gs.set("port", 0);
     }
 
     for(auto const& [type, uri] : setting.uris)
     {
-        QGSettings gs{ "org.gnome.system.proxy." + type.toLatin1() };
+        QGSettings gs { "org.gnome.system.proxy." + type.toLatin1() };
         gs.set("host", uri.host);
         gs.set("port", uri.port);
     }
@@ -46,8 +47,16 @@ try
 {
     if(argc == 2)
     {
-        auto path = QStandardPaths::standardLocations(QStandardPaths::ConfigLocation)[0];
-        auto settings = Settings::from_file(path + "/switcher.conf");
+        auto const path = QStandardPaths::standardLocations(QStandardPaths::ConfigLocation)[0];
+
+        QFile file { path + "/switcher.conf" };
+        if(!file.open(QFile::ReadOnly))
+        {
+            auto err = "Can't open file " + file.fileName() + " - " + file.errorString();
+            throw std::runtime_error { err.toStdString() };
+        }
+
+        auto settings = Settings::from(file);
 
         auto it = settings.find(argv[1]);
         if(it == settings.end()) return 1;
@@ -56,8 +65,8 @@ try
         return 0;
     }
 
-    std::cout << "Usage: switcher <conf>\n" << std::endl;
-    throw std::invalid_argument{ "Invalid number of parameters" };
+    std::cout << "Usage: switcher <conf-name>\n" << std::endl;
+    throw std::invalid_argument { "Invalid number of parameters" };
 }
 catch(std::exception& e)
 {

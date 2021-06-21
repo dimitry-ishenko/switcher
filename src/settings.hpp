@@ -9,6 +9,7 @@
 #define SETTINGS_HPP
 
 ////////////////////////////////////////////////////////////////////////////////
+#include <QFile>
 #include <QString>
 
 #include <map>
@@ -45,8 +46,9 @@ using Name = QString;
 
 struct Settings : public std::map<Name, Setting>
 {
-    static Settings from_file(const QString&);
     QString match(const Setting&);
+
+    static Settings from(QFile&);
 };
 
 ////////////////////////////////////////////////////////////////////////////////

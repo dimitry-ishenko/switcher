@@ -8,6 +8,7 @@
 #include "settings.hpp"
 
 #include <QApplication>
+#include <QFile>
 #include <QGSettings>
 #include <QIcon>
 #include <QMenu>
@@ -23,12 +24,12 @@
 #include <iostream>
 
 ////////////////////////////////////////////////////////////////////////////////
-Setting get_current()
+Setting current()
 {
     Setting s;
 
     {
-        QGSettings gs{ "org.gnome.system.proxy" };
+        QGSettings gs { "org.gnome.system.proxy" };
         s.mode = gs.get("mode").toString();
         s.autoconfig_url = gs.get("autoconfig-url").toString();
         s.ignore_hosts = gs.get("ignore-hosts").toString();
@@ -36,7 +37,7 @@ Setting get_current()
 
     for(auto const& type : Setting::types)
     {
-        QGSettings gs{ "org.gnome.system.proxy." + type.toLatin1() };
+        QGSettings gs { "org.gnome.system.proxy." + type.toLatin1() };
         Uri uri {
             gs.get("host").toString(),
             gs.get("port").toInt()
@@ -51,7 +52,7 @@ Setting get_current()
 int main(int argc, char* argv[])
 try
 {
-    QApplication app{ argc, argv };
+    QApplication app { argc, argv };
 
     std::signal(SIGINT, [](int) {
         std::cout << "Received SIGINT - stopping" << std::endl;
@@ -63,12 +64,19 @@ try
     });
 
     auto path = QStandardPaths::standardLocations(QStandardPaths::ConfigLocation)[0];
-    auto settings = Settings::from_file(path + "/switcher.conf");
+    QFile file { path + "/switcher.conf" };
+    if(!file.open(QFile::ReadOnly))
+    {
+        auto err = "Can't open file " + file.fileName() + " - " + file.errorString();
+        throw std::runtime_error { err.toStdString() };
+    }
 
-    QIcon none{ ":/none.png" };
+    auto settings = Settings::from(file);
+
+    QIcon none { ":/none.png" };
     QMenu menu;
 
-    QSystemTrayIcon tray{ none };
+    QSystemTrayIcon tray { none };
     tray.setContextMenu(&menu);
     tray.show();
 
@@ -80,7 +88,7 @@ try
     {
         static QString prev_name;
 
-        auto name = settings.match( get_current() );
+        auto name = settings.match( current() );
         if(name != prev_name)
         {
             auto icon = QIcon::fromTheme(name);
