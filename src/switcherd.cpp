@@ -26,7 +26,7 @@
 #include <vector>
 
 ////////////////////////////////////////////////////////////////////////////////
-Setting current()
+Setting get_current()
 {
     Setting s;
 
@@ -91,11 +91,17 @@ try
 
     auto update = [&]()
     {
-        auto name = settings.match( current() );
+        QIcon icon;
 
-        auto icon = QIcon::fromTheme(name);
+        auto current = get_current();
+        for(auto const& [ name, setting ] : settings)
+            if(setting == current)
+            {
+                icon = QIcon::fromTheme(name);
+                break;
+            }
+
         if(icon.isNull()) icon = none;
-
         tray.setIcon(icon);
     };
 
