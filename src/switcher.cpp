@@ -21,24 +21,24 @@ void switch_to(const Setting& setting)
 {
     {
         QGSettings gs { proxy::url };
-        gs.set("mode", setting.mode);
-        gs.set("autoconfig-url", setting.autoconfig_url);
-        gs.set("ignore-hosts", setting.ignore_hosts);
+        gs.set(proxy::mode, setting.mode);
+        gs.set(proxy::autoconfig_url, setting.autoconfig_url);
+        gs.set(proxy::ignore_hosts, setting.ignore_hosts);
     }
 
     // clear all uris first
     for(auto const& type : proxy::types)
     {
         QGSettings gs { QByteArray { proxy::url } + "." + type };
-        gs.set("host", "");
-        gs.set("port", 0);
+        gs.set(proxy::host, "");
+        gs.set(proxy::port, 0);
     }
 
     for(auto const& [type, uri] : setting.uris)
     {
         QGSettings gs { QByteArray { proxy::url } + "." + type.toLatin1() };
-        gs.set("host", uri.host);
-        gs.set("port", uri.port);
+        gs.set(proxy::host, uri.host);
+        gs.set(proxy::port, uri.port);
     }
 }
 
