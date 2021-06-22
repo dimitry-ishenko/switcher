@@ -31,7 +31,7 @@ Setting current()
     Setting s;
 
     {
-        QGSettings gs { proxy::url };
+        QGSettings gs { proxy::schema_id };
         s.mode = gs.get("mode").toString();
         s.autoconfig_url = gs.get("autoconfig-url").toString();
         s.ignore_hosts = gs.get("ignore-hosts").toString();
@@ -39,7 +39,7 @@ Setting current()
 
     for(auto const& type : proxy::types)
     {
-        QGSettings gs { QByteArray { proxy::url } + "." + type };
+        QGSettings gs { QByteArray { proxy::schema_id } + "." + type };
         Uri uri {
             gs.get("host").toString(),
             gs.get("port").toInt()
@@ -86,7 +86,7 @@ try
     tray.show();
 
     ////////////////////
-    QGSettings proxy { proxy::url };
+    QGSettings proxy { proxy::schema_id };
     std::vector<QGSettings*> types;
 
     auto update = [&]()
@@ -102,7 +102,7 @@ try
     QObject::connect(&proxy, &QGSettings::changed, update);
     for(auto const& type : proxy::types)
     {
-        types.push_back(new QGSettings { QByteArray { proxy::url } + "." + type, { }, &proxy });
+        types.push_back(new QGSettings { QByteArray { proxy::schema_id } + "." + type, { }, &proxy });
         QObject::connect(types.back(), &QGSettings::changed, update);
     }
 

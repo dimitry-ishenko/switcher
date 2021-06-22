@@ -15,7 +15,7 @@
 namespace proxy
 {
 
-constexpr auto url = "org.gnome.system.proxy";
+constexpr auto schema_id = "org.gnome.system.proxy";
 
 constexpr auto mode = "mode";
 constexpr auto autoconfig_url = "autoconfig-url";

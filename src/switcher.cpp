@@ -20,7 +20,7 @@
 void switch_to(const Setting& setting)
 {
     {
-        QGSettings gs { proxy::url };
+        QGSettings gs { proxy::schema_id };
         gs.set(proxy::mode, setting.mode);
         gs.set(proxy::autoconfig_url, setting.autoconfig_url);
         gs.set(proxy::ignore_hosts, setting.ignore_hosts);
@@ -29,14 +29,14 @@ void switch_to(const Setting& setting)
     // clear all uris first
     for(auto const& type : proxy::types)
     {
-        QGSettings gs { QByteArray { proxy::url } + "." + type };
+        QGSettings gs { QByteArray { proxy::schema_id } + "." + type };
         gs.set(proxy::host, "");
         gs.set(proxy::port, 0);
     }
 
     for(auto const& [type, uri] : setting.uris)
     {
-        QGSettings gs { QByteArray { proxy::url } + "." + type.toLatin1() };
+        QGSettings gs { QByteArray { proxy::schema_id } + "." + type.toLatin1() };
         gs.set(proxy::host, uri.host);
         gs.set(proxy::port, uri.port);
     }
