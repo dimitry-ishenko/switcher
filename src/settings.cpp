@@ -37,15 +37,7 @@ bool Setting::operator==(const Setting& rhs) const
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-QString Settings::match(const Setting& rhs)
-{
-    for(auto const& [ name, setting ] : (*this))
-        if(setting == rhs) return name;
-    return QString{ };
-}
-
-////////////////////////////////////////////////////////////////////////////////
-Settings Settings::from(QFile& file)
+Settings read_from(QFile& file)
 {
     Settings settings;
 

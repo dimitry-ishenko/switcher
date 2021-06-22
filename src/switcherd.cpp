@@ -74,7 +74,7 @@ try
         throw std::runtime_error { err.toStdString() };
     }
 
-    auto settings = Settings::from(file);
+    auto settings = read_from(file);
 
     ////////////////////
     QIcon::setThemeName("switcher");

@@ -39,13 +39,9 @@ struct Setting
 
 ////////////////////////////////////////////////////////////////////////////////
 using Name = QString;
+using Settings = std::map<Name, Setting>;
 
-struct Settings : public std::map<Name, Setting>
-{
-    QString match(const Setting&);
-
-    static Settings from(QFile&);
-};
+Settings read_from(QFile&);
 
 ////////////////////////////////////////////////////////////////////////////////
 #endif

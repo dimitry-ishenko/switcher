@@ -57,7 +57,7 @@ try
             throw std::runtime_error { err.toStdString() };
         }
 
-        auto settings = Settings::from(file);
+        auto settings = read_from(file);
 
         auto it = settings.find(argv[1]);
         if(it == settings.end()) return 1;
