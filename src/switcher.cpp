@@ -5,7 +5,7 @@
 // Distributed under the GNU GPL license. See the LICENSE.md file for details.
 
 ////////////////////////////////////////////////////////////////////////////////
-#include "gio.hpp"
+#include "proxy.hpp"
 #include "settings.hpp"
 
 #include <QFile>
@@ -20,23 +20,23 @@
 void switch_to(const Setting& setting)
 {
     {
-        QGSettings gs { gio::proxy::url };
+        QGSettings gs { proxy::url };
         gs.set("mode", setting.mode);
         gs.set("autoconfig-url", setting.autoconfig_url);
         gs.set("ignore-hosts", setting.ignore_hosts);
     }
 
     // clear all uris first
-    for(auto const& type : gio::proxy::types)
+    for(auto const& type : proxy::types)
     {
-        QGSettings gs { QByteArray { gio::proxy::url } + "." + type };
+        QGSettings gs { QByteArray { proxy::url } + "." + type };
         gs.set("host", "");
         gs.set("port", 0);
     }
 
     for(auto const& [type, uri] : setting.uris)
     {
-        QGSettings gs { QByteArray { gio::proxy::url } + "." + type.toLatin1() };
+        QGSettings gs { QByteArray { proxy::url } + "." + type.toLatin1() };
         gs.set("host", uri.host);
         gs.set("port", uri.port);
     }

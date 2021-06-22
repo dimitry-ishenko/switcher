@@ -12,8 +12,6 @@
 #include <initializer_list>
 
 ////////////////////////////////////////////////////////////////////////////////
-namespace gio
-{
 namespace proxy
 {
 
@@ -22,7 +20,6 @@ constexpr auto url = "org.gnome.system.proxy";
 constexpr auto modes = { "none", "auto", "manual" };
 constexpr auto types = { "http", "https", "ftp", "socks" };
 
-}
 }
 
 ////////////////////////////////////////////////////////////////////////////////
