@@ -5,9 +5,11 @@
 // Distributed under the GNU GPL license. See the LICENSE.md file for details.
 
 ////////////////////////////////////////////////////////////////////////////////
+#include "gio.hpp"
 #include "settings.hpp"
 
 #include <QApplication>
+#include <QByteArray>
 #include <QFile>
 #include <QGSettings>
 #include <QIcon>
@@ -29,15 +31,15 @@ Setting current()
     Setting s;
 
     {
-        QGSettings gs { "org.gnome.system.proxy" };
+        QGSettings gs { gio::proxy::url };
         s.mode = gs.get("mode").toString();
         s.autoconfig_url = gs.get("autoconfig-url").toString();
         s.ignore_hosts = gs.get("ignore-hosts").toString();
     }
 
-    for(auto const& type : Setting::types)
+    for(auto const& type : gio::proxy::types)
     {
-        QGSettings gs { "org.gnome.system.proxy." + type.toLatin1() };
+        QGSettings gs { QByteArray { gio::proxy::url } + "." + type };
         Uri uri {
             gs.get("host").toString(),
             gs.get("port").toInt()
@@ -84,7 +86,7 @@ try
     tray.show();
 
     ////////////////////
-    QGSettings proxy { "org.gnome.system.proxy" };
+    QGSettings proxy { gio::proxy::url };
     std::vector<QGSettings*> types;
 
     auto update = [&]()
@@ -98,9 +100,9 @@ try
     };
 
     QObject::connect(&proxy, &QGSettings::changed, update);
-    for(auto const& type : Setting::types)
+    for(auto const& type : gio::proxy::types)
     {
-        types.push_back(new QGSettings { "org.gnome.system.proxy." + type.toLatin1(), { }, &proxy });
+        types.push_back(new QGSettings { QByteArray { gio::proxy::url } + "." + type, { }, &proxy });
         QObject::connect(types.back(), &QGSettings::changed, update);
     }
 
