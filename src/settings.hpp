@@ -15,24 +15,25 @@
 #include <map>
 
 ////////////////////////////////////////////////////////////////////////////////
-using Mode = QString;
-using Type = QString;
-
-struct Uri
+struct uri
 {
     QString host;
     int port = 0;
 
     bool is_valid() const { return host.size() && port > 0; }
-    bool operator==(const Uri& rhs) const { return host == rhs.host && port == rhs.port; }
+
+    bool operator==(const uri& rhs) const { return host == rhs.host && port == rhs.port; }
 };
 
 ////////////////////////////////////////////////////////////////////////////////
+using Type = QString;
+
 struct Setting
 {
-    Mode mode;
-    QString autoconfig_url, ignore_hosts;
-    std::map<Type, Uri> uris;
+    QString mode;
+    QString autoconfig_url;
+    QString ignore_hosts;
+    std::map<Type, uri> uris;
 
     bool operator==(const Setting&) const;
 };

@@ -55,7 +55,7 @@ Settings read_from(QFile& file)
             else if(std::count(proxy::types.begin(), proxy::types.end(), param))
             {
                 auto values = entry[param].toObject();
-                Uri uri {
+                uri uri {
                     values["host"].toString(),
                     values["port"].toInt(0)
                 };

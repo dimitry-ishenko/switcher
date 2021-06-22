@@ -40,7 +40,7 @@ Setting get_current()
     for(auto const& type : proxy::types)
     {
         QGSettings gs { proxy::schema_id + "." + type };
-        Uri uri {
+        uri uri {
             gs.get("host").toString(),
             gs.get("port").toInt()
         };
