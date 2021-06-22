@@ -9,13 +9,14 @@
 #define GIO_HPP
 
 ////////////////////////////////////////////////////////////////////////////////
+#include <QByteArray>
 #include <initializer_list>
 
 ////////////////////////////////////////////////////////////////////////////////
 namespace proxy
 {
 
-constexpr auto schema_id = "org.gnome.system.proxy";
+inline const QByteArray schema_id = "org.gnome.system.proxy";
 
 constexpr auto mode = "mode";
 constexpr auto autoconfig_url = "autoconfig-url";

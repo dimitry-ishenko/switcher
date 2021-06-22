@@ -39,7 +39,7 @@ Setting current()
 
     for(auto const& type : proxy::types)
     {
-        QGSettings gs { QByteArray { proxy::schema_id } + "." + type };
+        QGSettings gs { proxy::schema_id + "." + type };
         Uri uri {
             gs.get("host").toString(),
             gs.get("port").toInt()
@@ -102,7 +102,7 @@ try
     QObject::connect(&proxy, &QGSettings::changed, update);
     for(auto const& type : proxy::types)
     {
-        types.push_back(new QGSettings { QByteArray { proxy::schema_id } + "." + type, { }, &proxy });
+        types.push_back(new QGSettings { proxy::schema_id + "." + type, { }, &proxy });
         QObject::connect(types.back(), &QGSettings::changed, update);
     }
 
