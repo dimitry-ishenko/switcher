@@ -5,15 +5,14 @@
 // Distributed under the GNU GPL license. See the LICENSE.md file for details.
 
 ////////////////////////////////////////////////////////////////////////////////
+#include "gio.hpp"
 #include "settings.hpp"
 
 #include <QFile>
 #include <QJsonDocument>
 #include <QJsonObject>
 
-////////////////////////////////////////////////////////////////////////////////
-const std::set<Mode> Setting::modes { "none", "manual", "auto" };
-const std::set<Type> Setting::types { "http", "https", "ftp", "socks" };
+#include <algorithm>
 
 ////////////////////////////////////////////////////////////////////////////////
 bool Setting::operator==(const Setting& rhs) const
@@ -49,6 +48,7 @@ QString Settings::match(const Setting& rhs)
 Settings Settings::from(QFile& file)
 {
     Settings settings;
+    using gio::proxy::types;
 
     auto entries = QJsonDocument::fromJson(file.readAll()).object();
     for(auto const& name : entries.keys())
@@ -61,7 +61,7 @@ Settings Settings::from(QFile& file)
                  if(param == "mode") setting.mode = entry[param].toString();
             else if(param == "autoconfig_url") setting.autoconfig_url = entry[param].toString();
             else if(param == "ignore_hosts") setting.ignore_hosts = entry[param].toString();
-            else if(Setting::types.count(param))
+            else if(std::count(types.begin(), types.end(), param))
             {
                 auto values = entry[param].toObject();
                 Uri uri {

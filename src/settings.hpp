@@ -13,7 +13,6 @@
 #include <QString>
 
 #include <map>
-#include <set>
 
 ////////////////////////////////////////////////////////////////////////////////
 using Mode = QString;
@@ -36,9 +35,6 @@ struct Setting
     std::map<Type, Uri> uris;
 
     bool operator==(const Setting&) const;
-
-    static const std::set<Mode> modes;
-    static const std::set<Type> types;
 };
 
 ////////////////////////////////////////////////////////////////////////////////
