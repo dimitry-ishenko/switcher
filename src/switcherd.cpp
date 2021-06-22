@@ -26,15 +26,15 @@
 #include <vector>
 
 ////////////////////////////////////////////////////////////////////////////////
-Setting get_current()
+profile get_current()
 {
-    Setting s;
+    profile p;
 
     {
         QGSettings gs { proxy::schema_id };
-        s.mode = gs.get("mode").toString();
-        s.autoconfig_url = gs.get("autoconfig-url").toString();
-        s.ignore_hosts = gs.get("ignore-hosts").toString();
+        p.mode = gs.get("mode").toString();
+        p.autoconfig_url = gs.get("autoconfig-url").toString();
+        p.ignore_hosts = gs.get("ignore-hosts").toString();
     }
 
     for(auto const& type : proxy::types)
@@ -44,10 +44,10 @@ Setting get_current()
             gs.get("host").toString(),
             gs.get("port").toInt()
         };
-        if(uri.is_valid()) s.uris[type] = std::move(uri);
+        if(uri.is_valid()) p.types[type] = std::move(uri);
     }
 
-    return s;
+    return p;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -94,8 +94,8 @@ try
         QIcon icon;
 
         auto current = get_current();
-        for(auto const& [ name, setting ] : settings)
-            if(setting == current)
+        for(auto const& [ name, profile ] : settings)
+            if(profile == current)
             {
                 icon = QIcon::fromTheme(name);
                 break;

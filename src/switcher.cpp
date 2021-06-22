@@ -17,13 +17,13 @@
 #include <iostream>
 
 ////////////////////////////////////////////////////////////////////////////////
-void switch_to(const Setting& setting)
+void switch_to(const profile& p)
 {
     {
         QGSettings gs { proxy::schema_id };
-        gs.set(proxy::mode, setting.mode);
-        gs.set(proxy::autoconfig_url, setting.autoconfig_url);
-        gs.set(proxy::ignore_hosts, setting.ignore_hosts);
+        gs.set(proxy::mode, p.mode);
+        gs.set(proxy::autoconfig_url, p.autoconfig_url);
+        gs.set(proxy::ignore_hosts, p.ignore_hosts);
     }
 
     // clear all uris first
@@ -34,7 +34,7 @@ void switch_to(const Setting& setting)
         gs.set(proxy::port, 0);
     }
 
-    for(auto const& [type, uri] : setting.uris)
+    for(auto const& [type, uri] : p.types)
     {
         QGSettings gs { proxy::schema_id + "." + type.toLatin1() };
         gs.set(proxy::host, uri.host);

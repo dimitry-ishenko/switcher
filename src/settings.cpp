@@ -15,7 +15,7 @@
 #include <algorithm>
 
 ////////////////////////////////////////////////////////////////////////////////
-bool Setting::operator==(const Setting& rhs) const
+bool profile::operator==(const profile& rhs) const
 {
     if(mode != rhs.mode) return false;
 
@@ -24,12 +24,12 @@ bool Setting::operator==(const Setting& rhs) const
     else if(mode == "manual")
     {
         if(ignore_hosts != rhs.ignore_hosts) return false;
-        if(uris.size() != rhs.uris.size()) return false;
+        if(types.size() != rhs.types.size()) return false;
 
-        for(auto const& [ type, uri ] : rhs.uris)
+        for(auto const& [ type, uri ] : rhs.types)
         {
-            auto it = uris.find(type);
-            if(it == uris.end() || !(it->second == uri)) return false;
+            auto it = types.find(type);
+            if(it == types.end() || !(it->second == uri)) return false;
         }
         return true;
     }
@@ -59,7 +59,7 @@ Settings read_from(QFile& file)
                     values["host"].toString(),
                     values["port"].toInt(0)
                 };
-                if(uri.is_valid()) setting.uris[param] = std::move(uri);
+                if(uri.is_valid()) setting.types[param] = std::move(uri);
             }
         }
     }

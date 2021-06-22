@@ -26,21 +26,21 @@ struct uri
 };
 
 ////////////////////////////////////////////////////////////////////////////////
-using Type = QString;
+using type = QString;
 
-struct Setting
+struct profile
 {
     QString mode;
     QString autoconfig_url;
     QString ignore_hosts;
-    std::map<Type, uri> uris;
+    std::map<type, uri> types;
 
-    bool operator==(const Setting&) const;
+    bool operator==(const profile&) const;
 };
 
 ////////////////////////////////////////////////////////////////////////////////
 using Name = QString;
-using Settings = std::map<Name, Setting>;
+using Settings = std::map<Name, profile>;
 
 Settings read_from(QFile&);
 
