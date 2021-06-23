@@ -5,8 +5,8 @@
 // Distributed under the GNU GPL license. See the LICENSE.md file for details.
 
 ////////////////////////////////////////////////////////////////////////////////
+#include "profile.hpp"
 #include "proxy.hpp"
-#include "settings.hpp"
 
 #include <QFile>
 #include <QGSettings>
@@ -17,13 +17,13 @@
 #include <iostream>
 
 ////////////////////////////////////////////////////////////////////////////////
-void switch_to(const profile& p)
+void switch_to(const profile::entry& e)
 {
     {
         QGSettings gs { proxy::schema_id };
-        gs.set(proxy::mode, p.mode);
-        gs.set(proxy::autoconfig_url, p.autoconfig_url);
-        gs.set(proxy::ignore_hosts, p.ignore_hosts);
+        gs.set(proxy::mode, e.mode);
+        gs.set(proxy::autoconfig_url, e.autoconfig_url);
+        gs.set(proxy::ignore_hosts, e.ignore_hosts);
     }
 
     // clear all uris first
@@ -34,7 +34,7 @@ void switch_to(const profile& p)
         gs.set(proxy::port, 0);
     }
 
-    for(auto const& [type, uri] : p.types)
+    for(auto const& [type, uri] : e.types)
     {
         QGSettings gs { proxy::schema_id + "." + type.toLatin1() };
         gs.set(proxy::host, uri.host);
@@ -57,16 +57,16 @@ try
             throw std::runtime_error { err.toStdString() };
         }
 
-        auto profiles = read_from(file);
+        auto entries = profile::read_from(file);
 
-        auto pi = profiles.find(argv[1]);
-        if(pi == profiles.end()) return 1;
+        auto pi = entries.find(argv[1]);
+        if(pi == entries.end()) return 1;
 
         switch_to(pi->second);
         return 0;
     }
 
-    std::cout << "Usage: switcher <conf-name>\n" << std::endl;
+    std::cout << "Usage: switcher <profile>\n" << std::endl;
     throw std::invalid_argument { "Invalid number of parameters" };
 }
 catch(std::exception& e)
