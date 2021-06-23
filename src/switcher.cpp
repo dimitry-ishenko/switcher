@@ -6,41 +6,14 @@
 
 ////////////////////////////////////////////////////////////////////////////////
 #include "profile.hpp"
-#include "proxy.hpp"
+#include "settings.hpp"
 
 #include <QFile>
-#include <QGSettings>
 #include <QStandardPaths>
-#include <QVariant>
+#include <QString>
 
-#include <stdexcept>
 #include <iostream>
-
-////////////////////////////////////////////////////////////////////////////////
-void switch_to(const profile::entry& e)
-{
-    {
-        QGSettings gs { proxy::schema_id };
-        gs.set(proxy::mode, e.mode);
-        gs.set(proxy::autoconfig_url, e.autoconfig_url);
-        gs.set(proxy::ignore_hosts, e.ignore_hosts);
-    }
-
-    // clear all uris first
-    for(auto const& type : proxy::types)
-    {
-        QGSettings gs { proxy::schema_id + "." + type };
-        gs.set(proxy::host, "");
-        gs.set(proxy::port, 0);
-    }
-
-    for(auto const& [type, uri] : e.types)
-    {
-        QGSettings gs { proxy::schema_id + "." + type.toLatin1() };
-        gs.set(proxy::host, uri.host);
-        gs.set(proxy::port, uri.port);
-    }
-}
+#include <stdexcept>
 
 ////////////////////////////////////////////////////////////////////////////////
 int main(int argc, char* argv[])
@@ -59,10 +32,16 @@ try
 
         auto entries = profile::read_from(file);
 
-        auto pi = entries.find(argv[1]);
-        if(pi == entries.end()) return 1;
+        QString name { argv[1] };
+        auto pi = entries.find(name);
+        if(pi == entries.end())
+        {
+            auto err = "Invalid profile: " + name;
+            throw std::runtime_error { err.toStdString() };
+        }
 
-        switch_to(pi->second);
+        settings{ }.switch_to(pi->second);
+
         return 0;
     }
 

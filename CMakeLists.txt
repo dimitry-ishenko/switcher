@@ -29,6 +29,8 @@ add_executable(${CLIENT_NAME}
     src/profile.cpp
     src/profile.hpp
     src/proxy.hpp
+    src/settings.cpp
+    src/settings.hpp
     src/switcher.cpp
 )
 target_link_libraries(${CLIENT_NAME} Qt5::Core ${GSETTINGS_LIBRARIES})
