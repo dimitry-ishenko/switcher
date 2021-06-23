@@ -57,12 +57,12 @@ try
             throw std::runtime_error { err.toStdString() };
         }
 
-        auto settings = read_from(file);
+        auto profiles = read_from(file);
 
-        auto it = settings.find(argv[1]);
-        if(it == settings.end()) return 1;
+        auto pi = profiles.find(argv[1]);
+        if(pi == profiles.end()) return 1;
 
-        switch_to(it->second);
+        switch_to(pi->second);
         return 0;
     }
 

@@ -39,10 +39,10 @@ struct profile
 };
 
 ////////////////////////////////////////////////////////////////////////////////
-using Name = QString;
-using Settings = std::map<Name, profile>;
+using name = QString;
+using profiles = std::map<name, profile>;
 
-Settings read_from(QFile&);
+profiles read_from(QFile&);
 
 ////////////////////////////////////////////////////////////////////////////////
 #endif

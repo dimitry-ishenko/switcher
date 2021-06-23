@@ -74,7 +74,7 @@ try
         throw std::runtime_error { err.toStdString() };
     }
 
-    auto settings = read_from(file);
+    auto profiles = read_from(file);
 
     ////////////////////
     QIcon::setThemeName("switcher");
@@ -94,7 +94,7 @@ try
         QIcon icon;
 
         auto current = get_current();
-        for(auto const& [ name, profile ] : settings)
+        for(auto const& [ name, profile ] : profiles)
             if(profile == current)
             {
                 icon = QIcon::fromTheme(name);

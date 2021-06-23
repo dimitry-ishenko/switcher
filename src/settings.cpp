@@ -37,21 +37,21 @@ bool profile::operator==(const profile& rhs) const
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-Settings read_from(QFile& file)
+profiles read_from(QFile& file)
 {
-    Settings settings;
+    profiles pp;
 
     auto entries = QJsonDocument::fromJson(file.readAll()).object();
     for(auto const& name : entries.keys())
     {
-        auto& setting = settings[name];
+        auto& p = pp[name];
 
         auto entry = entries[name].toObject();
         for(auto const& param : entry.keys())
         {
-                 if(param == "mode") setting.mode = entry[param].toString();
-            else if(param == "autoconfig_url") setting.autoconfig_url = entry[param].toString();
-            else if(param == "ignore_hosts") setting.ignore_hosts = entry[param].toString();
+                 if(param == "mode") p.mode = entry[param].toString();
+            else if(param == "autoconfig_url") p.autoconfig_url = entry[param].toString();
+            else if(param == "ignore_hosts") p.ignore_hosts = entry[param].toString();
             else if(std::count(proxy::types.begin(), proxy::types.end(), param))
             {
                 auto values = entry[param].toObject();
@@ -59,10 +59,10 @@ Settings read_from(QFile& file)
                     values["host"].toString(),
                     values["port"].toInt(0)
                 };
-                if(uri.is_valid()) setting.types[param] = std::move(uri);
+                if(uri.is_valid()) p.types[param] = std::move(uri);
             }
         }
     }
 
-    return settings;
+    return pp;
 }
