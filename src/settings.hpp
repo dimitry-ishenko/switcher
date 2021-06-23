@@ -28,6 +28,7 @@ public:
 
     using entry = profile::entry;
     entry current();
+    void switch_to(const entry&);
 
 signals:
     void changed();
