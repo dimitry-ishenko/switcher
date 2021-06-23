@@ -30,10 +30,10 @@ bool entry::operator==(const entry& rhs) const
 
         for(auto const& [ type, ruri ] : rhs.types)
         {
-            auto it = types.find(type);
-            if(it == types.end()) return false;
+            auto ti = types.find(type);
+            if(ti == types.end()) return false;
 
-            auto const& luri = it->second;
+            auto const& luri = ti->second;
             if(luri.host != ruri.host || luri.port != ruri.port) return false;
         }
         return true;
@@ -46,23 +46,26 @@ entries read_from(QFile& file)
 {
     entries entries;
 
-    auto doc = QJsonDocument::fromJson(file.readAll()).object();
-    for(auto const& name : doc.keys())
+    auto file_json = QJsonDocument::fromJson(file.readAll()).object();
+    for(auto fi = file_json.begin(); fi != file_json.end(); ++fi)
     {
-        auto& e = entries[name];
+        auto& entry = entries[fi.key()];
 
-        auto val = doc[name].toObject();
-        for(auto const& name : val.keys())
+        auto entry_json = fi.value().toObject();
+        for(auto ei = entry_json.begin(); ei != entry_json.end(); ++ei)
         {
-                 if(name == mode) e.mode = val[name].toString();
-            else if(name == autoconfig_url) e.autoconfig_url = val[name].toString();
-            else if(name == ignore_hosts) e.ignore_hosts = val[name].toString();
-            else if(std::count(types.begin(), types.end(), name))
-            {
-                auto type = val[name].toObject();
-                entry::uri uri { type[host].toString(), type[port].toInt(0) };
+            auto key = ei.key();
+            auto value = ei.value();
 
-                if(uri.is_valid()) e.types[name] = std::move(uri);
+                 if(key == mode) entry.mode = value.toString();
+            else if(key == autoconfig_url) entry.autoconfig_url = value.toString();
+            else if(key == ignore_hosts) entry.ignore_hosts = value.toString();
+            else if(std::count(types.begin(), types.end(), key))
+            {
+                auto uri_json = value.toObject();
+                entry::uri uri { uri_json[host].toString(), uri_json[port].toInt(0) };
+
+                if(uri.is_valid()) entry.types[key] = std::move(uri);
             }
         }
     }
