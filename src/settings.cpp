@@ -22,7 +22,7 @@ settings::settings(QObject* parent) : QObject { parent }
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-settings::entry settings::to_entry()
+settings::entry settings::current()
 {
     using namespace proxy;
 

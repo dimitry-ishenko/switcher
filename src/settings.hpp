@@ -27,7 +27,7 @@ public:
     explicit settings(QObject* parent = nullptr);
 
     using entry = profile::entry;
-    entry to_entry();
+    entry current();
 
 signals:
     void changed();
