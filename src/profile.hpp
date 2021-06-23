@@ -24,7 +24,10 @@ constexpr auto mode = "mode";
 constexpr auto autoconfig_url = "autoconfig_url";
 constexpr auto ignore_hosts = "ignore_hosts";
 
-constexpr auto modes = { "none", "auto", "manual" };
+constexpr auto none = "none";
+constexpr auto auto_ = "auto";
+constexpr auto manual = "manual";
+
 constexpr auto types = { "http", "https", "ftp", "socks" };
 
 constexpr auto host = "host";
@@ -47,6 +50,8 @@ struct entry
     using type = QString;
 
     std::map<type, uri> types;
+
+    bool operator==(const entry&) const;
 };
 
 ////////////////////////////////////////////////////////////////////////////////

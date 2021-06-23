@@ -13,7 +13,36 @@
 #include <algorithm>
 
 ////////////////////////////////////////////////////////////////////////////////
-profile::entries profile::read_from(QFile& file)
+namespace profile
+{
+
+////////////////////////////////////////////////////////////////////////////////
+bool entry::operator==(const entry& rhs) const
+{
+    if(mode != rhs.mode) return false;
+
+         if(mode == none) return true;
+    else if(mode == auto_) return autoconfig_url == rhs.autoconfig_url;
+    else if(mode == manual)
+    {
+        if(ignore_hosts != rhs.ignore_hosts) return false;
+        if(types.size() != rhs.types.size()) return false;
+
+        for(auto const& [ type, ruri ] : rhs.types)
+        {
+            auto it = types.find(type);
+            if(it == types.end()) return false;
+
+            auto const& luri = it->second;
+            if(luri.host != ruri.host || luri.port != ruri.port) return false;
+        }
+        return true;
+    }
+    else return false;
+}
+
+////////////////////////////////////////////////////////////////////////////////
+entries read_from(QFile& file)
 {
     entries entries;
 
@@ -39,4 +68,7 @@ profile::entries profile::read_from(QFile& file)
     }
 
     return entries;
+}
+
+////////////////////////////////////////////////////////////////////////////////
 }
