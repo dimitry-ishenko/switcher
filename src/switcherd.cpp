@@ -5,50 +5,21 @@
 // Distributed under the GNU GPL license. See the LICENSE.md file for details.
 
 ////////////////////////////////////////////////////////////////////////////////
-#include "proxy.hpp"
+#include "profile.hpp"
 #include "settings.hpp"
 
 #include <QApplication>
-#include <QByteArray>
 #include <QFile>
-#include <QGSettings>
 #include <QIcon>
 #include <QMenu>
 #include <QObject>
 #include <QStandardPaths>
 #include <QSystemTrayIcon>
-#include <QVariant>
 
 #include <csignal>
 #include <cstdlib>
-#include <stdexcept>
 #include <iostream>
-#include <vector>
-
-////////////////////////////////////////////////////////////////////////////////
-profile get_current()
-{
-    profile p;
-
-    {
-        QGSettings gs { proxy::schema_id };
-        p.mode = gs.get("mode").toString();
-        p.autoconfig_url = gs.get("autoconfig-url").toString();
-        p.ignore_hosts = gs.get("ignore-hosts").toString();
-    }
-
-    for(auto const& type : proxy::types)
-    {
-        QGSettings gs { proxy::schema_id + "." + type };
-        uri uri {
-            gs.get("host").toString(),
-            gs.get("port").toInt()
-        };
-        if(uri.is_valid()) p.types[type] = std::move(uri);
-    }
-
-    return p;
-}
+#include <stdexcept>
 
 ////////////////////////////////////////////////////////////////////////////////
 int main(int argc, char* argv[])
@@ -74,7 +45,7 @@ try
         throw std::runtime_error { err.toStdString() };
     }
 
-    auto profiles = read_from(file);
+    auto entries = profile::read_from(file);
 
     ////////////////////
     QIcon::setThemeName("switcher");
@@ -86,16 +57,15 @@ try
     tray.show();
 
     ////////////////////
-    QGSettings proxy { proxy::schema_id };
-    std::vector<QGSettings*> types;
+    settings s;
 
     auto update = [&]()
     {
         QIcon icon;
 
-        auto current = get_current();
-        for(auto const& [ name, profile ] : profiles)
-            if(profile == current)
+        auto current = s.current();
+        for(auto const& [ name, entry ] : entries)
+            if(entry == current)
             {
                 icon = QIcon::fromTheme(name);
                 break;
@@ -104,23 +74,14 @@ try
         if(icon.isNull()) icon = none;
         tray.setIcon(icon);
     };
+    update();
 
-    QObject::connect(&proxy, &QGSettings::changed, update);
-    for(auto const& type : proxy::types)
-    {
-        types.push_back(new QGSettings { proxy::schema_id + "." + type, { }, &proxy });
-        QObject::connect(types.back(), &QGSettings::changed, update);
-    }
+    QObject::connect(&s, &settings::changed, update);
 
     return app.exec();
 }
 catch(std::exception& e)
 {
     std::cerr << e.what() << std::endl;
-    return 1;
-}
-catch(...)
-{
-    std::cerr << "???" << std::endl;
     return 1;
 }
