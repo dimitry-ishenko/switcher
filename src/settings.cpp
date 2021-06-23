@@ -34,7 +34,7 @@ settings::entry settings::to_entry()
     for(auto const& [ type, gs ] : types)
     {
         entry::uri uri { gs->get(host).toString(), gs->get(port).toInt(0) };
-        if(uri.host.size() && uri.port > 0) e.types[type] = std::move(uri);
+        if(uri.is_valid()) e.types[type] = std::move(uri);
     }
 
     return e;

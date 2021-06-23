@@ -41,6 +41,8 @@ struct entry
     {
         QString host;
         int port;
+
+        bool is_valid() const { return host.size() && port > 0; }
     };
     using type = QString;
 
@@ -57,4 +59,4 @@ entries read_from(QFile&);
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-#endif // PROFILE_HPP
+#endif

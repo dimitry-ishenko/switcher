@@ -33,7 +33,7 @@ profile::entries profile::read_from(QFile& file)
                 auto type = val[name].toObject();
                 entry::uri uri { type[host].toString(), type[port].toInt(0) };
 
-                if(uri.host.size() && uri.port > 0) e.types[name] = std::move(uri);
+                if(uri.is_valid()) e.types[name] = std::move(uri);
             }
         }
     }
