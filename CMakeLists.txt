@@ -26,6 +26,8 @@ set(CLIENT_NAME ${PROJECT_NAME})
 set(DAEMON_NAME ${PROJECT_NAME}d)
 
 add_executable(${CLIENT_NAME}
+    src/profile.cpp
+    src/profile.hpp
     src/proxy.hpp
     src/settings.cpp
     src/settings.hpp
@@ -35,6 +37,8 @@ target_link_libraries(${CLIENT_NAME} Qt5::Core ${GSETTINGS_LIBRARIES})
 
 add_executable(${DAEMON_NAME}
     res/icon.qrc
+    src/profile.cpp
+    src/profile.hpp
     src/proxy.hpp
     src/settings.cpp
     src/settings.hpp
