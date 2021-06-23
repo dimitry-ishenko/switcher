@@ -24,7 +24,8 @@ $ sudo apt install ./switcher_${ver}_armhf.deb
 
 ### From source
 
-Stable version (requires [Qt](https://www.qt.io/) >= 5.9 and
+Stable version (requires [Qt](https://www.qt.io/) >= 5.9,
+[qsettings-qt](https://gitlab.com/ubports/core/gsettings-qt) and 
 [CMake](https://cmake.org/) >= 3.1):
 
 ```shell
@@ -39,7 +40,8 @@ $ sudo make install
 ```
 
 Latest master (requires [git](https://git-scm.com/), [Qt](https://www.qt.io/) >=
-5.9 and [CMake](https://cmake.org/) >= 3.1):
+5.9, [qsettings-qt](https://gitlab.com/ubports/core/gsettings-qt) and 
+[CMake](https://cmake.org/) >= 3.1):
 
 ```shell
 $ git clone https://github.com/dimitry-ishenko/switcher.git
