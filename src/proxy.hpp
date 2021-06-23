@@ -22,7 +22,6 @@ constexpr auto mode = "mode";
 constexpr auto autoconfig_url = "autoconfig-url";
 constexpr auto ignore_hosts = "ignore-hosts";
 
-constexpr auto modes = { "none", "auto", "manual" };
 constexpr auto types = { "http", "https", "ftp", "socks" };
 
 constexpr auto host = "host";
