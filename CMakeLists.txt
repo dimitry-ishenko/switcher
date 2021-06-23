@@ -29,8 +29,6 @@ add_executable(${CLIENT_NAME}
     src/profile.cpp
     src/profile.hpp
     src/proxy.hpp
-    src/settings.cpp
-    src/settings.hpp
     src/switcher.cpp
 )
 target_link_libraries(${CLIENT_NAME} Qt5::Core ${GSETTINGS_LIBRARIES})
@@ -40,8 +38,6 @@ add_executable(${DAEMON_NAME}
     src/profile.cpp
     src/profile.hpp
     src/proxy.hpp
-    src/settings.cpp
-    src/settings.hpp
     src/switcherd.cpp
 )
 target_link_libraries(${DAEMON_NAME} Qt5::Core Qt5::Widgets ${GSETTINGS_LIBRARIES})
